@@ -6,6 +6,8 @@ public class PackageList {
     //length of the list
     private int size;
 
+
+
     public PackageList() {
         size = 0;
         head = new Package();
@@ -39,22 +41,16 @@ public class PackageList {
 
 
     }
+    public void popHead() throws EmptyException {
+        if(size == 0){
+            throw new EmptyException("No packages!");
+        }else{
+            head.previousPackage.nextPackage = null;
+            head = head.previousPackage;
 
+        }
+    }
 
-    //
-//    public Package pop(){
-//        Package tmp = head;
-//        for (int i = 0; i < size; i++) {
-//
-//        }
-//    }
-//    public PackageList remove(int key){
-//
-//    }
-//    // remove element with minimum key
-//    public PackageList removeMin(){
-//
-//    }
     private static final class Package {
         // key( number of package)
         private int key;
@@ -114,4 +110,5 @@ public class PackageList {
 
         }
     }
+
 }
