@@ -1,8 +1,36 @@
 package com.company;
 
-public class PackageList {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class PackageList implements Cloneable{
 
     private Package head, tail;
+
+    public Package getHead() {
+        return head;
+    }
+
+    public void setHead(Package head) {
+        this.head = head;
+    }
+
+    public Package getTail() {
+        return tail;
+    }
+
+    public void setTail(Package tail) {
+        this.tail = tail;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     //length of the list
     private int size;
 
@@ -31,7 +59,6 @@ public class PackageList {
         head.nextPackage = newPackage;
         head = newPackage;
 
-
     }
 //        System.out.println("Head: " + head.value);
   //      System.out.println("Tail: " + tail.value);
@@ -41,16 +68,112 @@ public class PackageList {
 
 
     }
-    public void popHead() throws EmptyException {
+    public Package popHead() throws EmptyException{
+        if(size == 0){
+            throw new EmptyException("No packages!");
+        }
+        if (size>1) {
+            int key = head.key;
+            String value = head.value;
+            Package tempPackage = new Package(key, value);
+            head.previousPackage.nextPackage = null;
+            head = head.previousPackage;
+            --size;
+            return tempPackage;
+        }
+        else{
+            int key = head.key;
+            String value = head.value;
+            Package tempPackage = new Package(key, value);
+            head = null;
+            tail = null;
+            size = 0;
+//            --size;
+            return tempPackage;
+        }
+    }
+    public Package peekHead() throws EmptyException{
         if(size == 0){
             throw new EmptyException("No packages!");
         }else{
-            head.previousPackage.nextPackage = null;
-            head = head.previousPackage;
+            int key = head.key;
+            String value = head.value;
+            Package tempPackage = new Package(key, value);
+            return  tempPackage;
+        }
+    }
+    public void showPackageList() throws EmptyException{
+        if(size == 0){
+            throw new EmptyException("No packages!");
+        }else {
+
+            try{
+                PackageList tempPackageList = (PackageList) this.clone();
+                for (int i = 0; i < size; i++) {
+                    Package tempPackage = tempPackageList.popHead();
+                    System.out.println("Key: " + tempPackage.key + " . Value: " + tempPackage.value);
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
 
         }
     }
 
+    public PackageList shuffle() throws EmptyException {
+        if(size == 0){
+            throw new EmptyException("No packages!");
+        }else{
+
+            ArrayList<Integer> numbers = new ArrayList<Integer>();
+            for (int i = 0; i < size ; i++) {
+                numbers.add(i+1);
+            }
+            Collections.shuffle(numbers);
+           PackageList shuffledPackage = new PackageList();
+           try {
+               for (int i = 0; i < size; i++) {
+
+                   PackageList tempPackageList = (PackageList) this.clone();
+
+                   int drawnNumber = numbers.remove(0);
+                   for (int j = 0; j < size; j++) {
+                       Package tempPackage = tempPackageList.popHead();
+
+                       if (tempPackage.getKey() == drawnNumber) {
+                           shuffledPackage.insert(tempPackage.getKey(), tempPackage.getValue());
+
+                       }
+                   }
+
+               }
+           }catch (Exception e){
+               System.out.println(e.getMessage());
+           }
+//           shuffledPackage.showPackageList();
+            return shuffledPackage;
+
+        }
+    }
+    public PackageList sort(){
+        PackageList tempPackageList = new PackageList();
+        try{
+            while(!isEmpty()) {
+                Package tempPackage = popHead();
+//                tempPackageList.insert(tempPackage.getKey(), tempPackage.getValue());
+                while (!tempPackageList.isEmpty() && tempPackageList.peekHead().getKey() < tempPackage.getKey()) {
+                    Package tempTempPackage = tempPackageList.popHead();
+                    insert(tempTempPackage.getKey(), tempTempPackage.getValue());
+                }
+                tempPackageList.insert(tempPackage.getKey(), tempPackage.getValue());
+            }
+        }catch (EmptyException e){
+            System.out.println(e.getMessage());
+        }
+
+        return tempPackageList;
+    }
     private static final class Package {
         // key( number of package)
         private int key;

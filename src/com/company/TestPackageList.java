@@ -1,16 +1,23 @@
 package com.company;
 
 
-public class TestPackageList {
-    public static void main(String[] args) throws EmptyException {
+public class TestPackageList  {
+    public static void main(String[] args)  {
         PackageList testPackage = new PackageList();
-        int[] keys = {5,2,7,34,1,23,9};
+        int[] keys = {1,2,3,4,5,6};
         String[] values = {"a", "b", "c", "d", "e", "f"};
-        for (int i = 0; i < keys.length - 1; i++) {
+        for (int i = 0; i < keys.length ; i++) {
             testPackage.insert(keys[i], values[i]);
         }
         try{
-            testPackage.popHead();
+//            testPackage.showPackageList();
+            testPackage = testPackage.shuffle();
+            testPackage.showPackageList();
+            System.out.println("Po sortowaniu");
+            testPackage = testPackage.sort();
+            testPackage.showPackageList();
+
+
 
         } catch (EmptyException e){
             System.out.println(e.getMessage());
