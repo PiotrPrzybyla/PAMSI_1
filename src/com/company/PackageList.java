@@ -119,6 +119,7 @@ public class PackageList implements Cloneable{
         }
     }
 
+
     public PackageList shuffle() throws EmptyException {
         if(isEmpty()){
             throw new EmptyException("No packages!");
@@ -151,9 +152,9 @@ public class PackageList implements Cloneable{
                    }
 
                }
-               for (int usedNumber : usedNumbers) {
-                   System.out.println(usedNumber);
-               }
+//               for (int usedNumber : usedNumbers) {
+//                   System.out.println(usedNumber);
+//               }
            }catch (Exception e){
                System.out.println(e.getMessage());
            }
@@ -161,6 +162,14 @@ public class PackageList implements Cloneable{
             return shuffledPackage;
 
         }
+    }
+    public String makeString() throws CloneNotSupportedException, EmptyException {
+        PackageList temp = (PackageList) (this.clone());
+        String message = "";
+        for (int i = 0; i < size; i++) {
+            message = (message + temp.popHead().value );
+        }
+        return message;
     }
     public PackageList sort(){
         PackageList tempPackageList = new PackageList();
@@ -206,6 +215,36 @@ public class PackageList implements Cloneable{
         System.out.println("Sorting loop was iterating " + sortCounter + " times");
         return tempPackageList;
     }
+
+    public PackageList sortTest(){
+        PackageList tempPackageList = new PackageList();
+        try{
+            while(!isEmpty()) {
+
+                Package tempPackage = popHead();
+
+
+
+                while (!tempPackageList.isEmpty() && tempPackageList.peekHead().getKey() < tempPackage.getKey()) {
+
+
+                    Package tempTempPackage = tempPackageList.popHead();
+                    insert(tempTempPackage.getKey(), tempTempPackage.getValue());
+
+                }
+
+
+                tempPackageList.insert(tempPackage.getKey(), tempPackage.getValue());
+            }
+        }catch (EmptyException e){
+            System.out.println(e.getMessage());
+        }
+
+        return tempPackageList;
+    }
+
+
+
     private static final class Package {
         // key( number of package)
         private int key;

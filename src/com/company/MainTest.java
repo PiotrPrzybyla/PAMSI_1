@@ -19,7 +19,7 @@ public class MainTest {
 
 
 
-        String generatedString;
+        ArrayList<String> testMessages = new ArrayList();
         Sender testSender = new Sender();
         Recipient testRecipient = new Recipient();
         Server testServer = new Server();
@@ -34,12 +34,12 @@ public class MainTest {
             int targetStringLength = stringLength;
             Random random = new Random();
 
-             generatedString = random.ints(leftLimit, rightLimit + 1)
+            String generatedString = random.ints(leftLimit, rightLimit + 1)
                     .filter(j -> (j <= 57 || j >= 65) && (j <= 90 || j >= 97))
                     .limit(targetStringLength)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
-
+            testMessages.add(generatedString);
             testSender.setMessage(generatedString);
             String sortedString = testServer.testMessage(testSender,testRecipient, 10);
 

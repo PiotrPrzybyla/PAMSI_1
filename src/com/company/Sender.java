@@ -33,6 +33,7 @@ public class Sender {
         Scanner scanner = new Scanner(System.in);
         message = scanner.nextLine();
     }
+
     public void divideMessage(int size) {
 
         String tempMessage=message;
@@ -54,6 +55,26 @@ public class Sender {
         if(iterator > 1){
             System.out.println("Your message is too big. It will be sent in " + (iterator -1) + " packages");
         }
+    }
+    public void testDivideMessage(int size) {
+
+        String tempMessage=message;
+        String partOfMessage;
+        int iterator = 1;
+        while(tempMessage!=null){
+            if(tempMessage.length()>size){
+
+                partOfMessage=tempMessage.substring(0, size);
+                tempMessage=tempMessage.substring(size);
+                messageList.insert(iterator, partOfMessage);
+                ++iterator;
+
+            } else{
+                messageList.insert(iterator++, tempMessage);
+                tempMessage=null;
+            }
+        }
+
     }
 
 
