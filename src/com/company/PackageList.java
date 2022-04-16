@@ -1,12 +1,16 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class PackageList implements Cloneable{
 
-    private Package head, tail;
 
+    //head and tail of the list
+    private Package head, tail;
+    //length of the list
+    private int size;
+
+
+    //getters and setters
     public Package getHead() {
         return head;
     }
@@ -31,11 +35,10 @@ public class PackageList implements Cloneable{
         this.size = size;
     }
 
-    //length of the list
-    private int size;
 
 
 
+    //constructor with no arguments
     public PackageList() {
         size = 0;
         head = new Package();
@@ -47,29 +50,26 @@ public class PackageList implements Cloneable{
         return(size == 0);
     }
 
-    // insert a new package
+    // insert a new package to head of list
     public void insert(int key, String value){
-
+    // check if is empty
     if(isEmpty()){
            head = tail = new Package(key, value);
     }
-//           System.out.println(tmp.value);
+    // if not empty then insert key and value to head
     else {
         Package newPackage = new Package(key,value, head);
         head.nextPackage = newPackage;
         head = newPackage;
 
     }
-//        System.out.println("Head: " + head.value);
-  //      System.out.println("Tail: " + tail.value);
-
-
+    // increase size
         ++size;
-
-
     }
+
+    // Pop an element from head
     public Package popHead() throws EmptyException{
-        if(size == 0){
+        if(isEmpty()){
             throw new EmptyException("No packages!");
         }
         if (size>1) {
@@ -93,17 +93,15 @@ public class PackageList implements Cloneable{
         }
     }
     public Package peekHead() throws EmptyException{
-        if(size == 0){
+        if(isEmpty()){
             throw new EmptyException("No packages!");
         }else{
-            int key = head.key;
-            String value = head.value;
-            Package tempPackage = new Package(key, value);
+            Package tempPackage = new Package(head.key, head.value);
             return  tempPackage;
         }
     }
     public void showPackageList() throws EmptyException{
-        if(size == 0){
+        if(isEmpty()){
             throw new EmptyException("No packages!");
         }else {
 
@@ -122,22 +120,27 @@ public class PackageList implements Cloneable{
     }
 
     public PackageList shuffle() throws EmptyException {
-        if(size == 0){
+        if(isEmpty()){
             throw new EmptyException("No packages!");
         }else{
 
-            ArrayList<Integer> numbers = new ArrayList<Integer>();
-            for (int i = 0; i < size ; i++) {
-                numbers.add(i+1);
-            }
-            Collections.shuffle(numbers);
+
            PackageList shuffledPackage = new PackageList();
+            int[] usedNumbers = new int[size];
            try {
                for (int i = 0; i < size; i++) {
 
                    PackageList tempPackageList = (PackageList) this.clone();
 
-                   int drawnNumber = numbers.remove(0);
+                   int drawnNumber = (int)((Math.random() * size) + 1);
+                   for ( int k=0; k<size; k++) {
+                       if(usedNumbers[k] == drawnNumber){
+                           drawnNumber = (int)((Math.random() * size) + 1);
+                           k=-1;
+                       }
+                   }
+                    usedNumbers[i] = drawnNumber;
+
                    for (int j = 0; j < size; j++) {
                        Package tempPackage = tempPackageList.popHead();
 
@@ -148,30 +151,59 @@ public class PackageList implements Cloneable{
                    }
 
                }
+               for (int usedNumber : usedNumbers) {
+                   System.out.println(usedNumber);
+               }
            }catch (Exception e){
                System.out.println(e.getMessage());
            }
-//           shuffledPackage.showPackageList();
+
             return shuffledPackage;
 
         }
     }
     public PackageList sort(){
         PackageList tempPackageList = new PackageList();
+        int sortCounter = 0;
         try{
             while(!isEmpty()) {
+                sortCounter++;
                 Package tempPackage = popHead();
-//                tempPackageList.insert(tempPackage.getKey(), tempPackage.getValue());
+                System.out.println("");
+                System.out.println("-------------------------------------");
+                System.out.println("");
+                System.out.println("Taking element - Key: " + tempPackage.key + ", Value: " + tempPackage.value);
+                int tempPackageHead = 0;
+                if(!tempPackageList.isEmpty()){
+
+                    System.out.println("");
+                    System.out.println("-------------------------------------");
+                    System.out.println("");
+                    System.out.println("Checking where element belongs");
+                     tempPackageHead = tempPackageList.peekHead().getKey();
+                }
+
                 while (!tempPackageList.isEmpty() && tempPackageList.peekHead().getKey() < tempPackage.getKey()) {
+                    sortCounter++;
+                    System.out.println("");
+                    System.out.println(tempPackageList.peekHead().getKey() + " is less than " + tempPackage.getKey() + " so it is not place where our element belong");
+                    System.out.println("We should take " + tempPackageList.peekHead().getKey() + " element, and throw it back to shuffled list");
                     Package tempTempPackage = tempPackageList.popHead();
                     insert(tempTempPackage.getKey(), tempTempPackage.getValue());
+                    System.out.println("");
+                }
+
+                if (tempPackageList.isEmpty()){
+                    System.out.println("That is first element so we can put it here");
+                }else{
+                    System.out.println( tempPackage.getKey() + " is less than " + tempPackageHead +" so that's the place where our element belong");
                 }
                 tempPackageList.insert(tempPackage.getKey(), tempPackage.getValue());
             }
         }catch (EmptyException e){
             System.out.println(e.getMessage());
         }
-
+        System.out.println("Sorting loop was iterating " + sortCounter + " times");
         return tempPackageList;
     }
     private static final class Package {
@@ -235,3 +267,5 @@ public class PackageList implements Cloneable{
     }
 
 }
+
+
